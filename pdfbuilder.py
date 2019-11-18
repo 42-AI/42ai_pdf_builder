@@ -140,9 +140,9 @@ class PDFBuilder:
         Story.append(PageBreak())
 
     def addPDFPage(self, Story, filename, with_compilation):
-        tmp_name = '.' + ''.join(
+        tmp_name = '~' + ''.join(
             random.choices(string.ascii_lowercase + string.digits, k=16)
-        ) + '.md'
+        ) + '-pdfbuilder.tmp'
 
         if with_compilation is True:
             os.system(f'python3 -m readme2tex --nocdn \
@@ -197,7 +197,7 @@ class PDFBuilder:
     def addTable(self, Story, htmlTag):
         content = extract_table(htmlTag.children)
         table = Table(
-            self.TableFormater(content), colWidths=[5 * cm, 10 * cm], hAlign="CENTER"
+            self.TableFormater(content), hAlign="CENTER"
         )
         table.setStyle(
             TableStyle(
@@ -251,9 +251,9 @@ class PDFBuilder:
     def savePDF(self, Story, with_optimization):
         print('Saving PDF as', self.pdf_name)
 
-        tmp_name = '.' + ''.join(
+        tmp_name = '~' + ''.join(
             random.choices(string.ascii_lowercase + string.digits, k=16)
-        ) + '.pdf' 
+        ) + '-pdfbuilder.tmp' 
 
         if with_optimization is True:
             self.doc.filename = tmp_name

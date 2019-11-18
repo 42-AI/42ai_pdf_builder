@@ -14,6 +14,7 @@
 
 ### Requirements
 
+
 * Python 3.x
 * Pillow 6.2.0
 * reportlab 3.5.32
@@ -21,6 +22,7 @@
 * CairoSVG 2.4.2
 * readme2tex 0.0.1b2
 
+And:
 * Ghostscript
 
 ## Supported elements
@@ -50,8 +52,15 @@ The `pdfbuilder` support this syntax.
 ```
 
 ### Image
+**Warning: image declared like `![image info](path/to/img)` is not supported.**
 ```
 <img src="{image_path}" width={image_width} height={image_height}>
+```
+
+### Paragraph
+**Warning: content of paragraph can only be `<img />` or simple text.**
+```
+<p>{content}</p>
 ```
 
 ### Code section
@@ -61,7 +70,6 @@ The `pdfbuilder` support this syntax.
 ```</code></pre>
 
 ### Table
-**Warning: use with caution, you can only have 2 columns with the pdf builder.**
 ```
 |                  |                  |
 | ----------------:| ---------------- |
@@ -86,19 +94,19 @@ This is inline LaTeX, $f(x) = -x$
 ```
 
 ### Text formating
-##### Bold
+#### Bold
 ```
 text **{bold content}** text
 text *{bold content}* text
 ```
 
-##### Italic
+#### Italic
 ```
 text __{italic content}__ text
 text _{italic content}_ text
 ```
 
-##### Code highlight
+#### Code highlight
 ```
 text `{code content}` text
 ```
