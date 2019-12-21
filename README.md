@@ -27,9 +27,9 @@ And:
 
 ## Supported elements
 
-The `pdfbuilder` support this syntax.
+The `pdfbuilder` supports the following syntax.
 
-**Warning: if you are using LaTeX syntax, make sure that if a `$` that is not LaTeX to escape it with a backslash.**
+**Warning: if you are using LaTeX syntax, make sure to escape a `$` that is not LaTeX with a backslash.**
 
 ### h1 title
 ```
@@ -52,7 +52,7 @@ The `pdfbuilder` support this syntax.
 ```
 
 ### Image
-**Warning: image declared like `![image info](path/to/img)` is not supported.**
+**Warning: any image inserted using `![image info](path/to/img)` is not supported.**
 ```
 <img src="{image_path}" width={image_width} height={image_height}>
 ```
@@ -64,7 +64,7 @@ The `pdfbuilder` support this syntax.
 ```
 
 ### Code section
-**Warning: only python and bash language are currently supported.**
+**Warning: only Python and bash language are currently supported.**
 <pre><code>```{language}
 {content}
 ```</code></pre>
@@ -93,7 +93,7 @@ $$
 This is inline LaTeX, $f(x) = -x$
 ```
 
-### Text formating
+### Text formatting
 #### Bold
 ```
 text **{bold content}** text
@@ -126,7 +126,7 @@ $> python -V
 Python 3.7.*
 ```
 
-Basic utilisation:
+Basic usage:
 ```console
 python pdfbuilder.py /path/to/folder_or_md_file
 ```
