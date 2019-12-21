@@ -71,7 +71,7 @@ The `pdfbuilder` supports the following syntax.
 ```
 
 ### Code section
-**Warning: only Python and bash language are currently supported.**
+**Warning: only Python and bash languages are currently supported.**
 <pre><code>```{language}
 {content}
 ```</code></pre>
