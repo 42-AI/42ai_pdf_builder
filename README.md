@@ -12,6 +12,13 @@
 
 ## Installation
 
+### Mac OS X
+
+```console
+brew install python3 cairo libffi ghostscript
+pip install -r requirements.txt
+```
+
 ### Requirements
 
 
