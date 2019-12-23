@@ -12,15 +12,9 @@
 
 ## Installation
 
-### Mac OS X
-
-```console
-brew install python3 cairo libffi ghostscript
-pip install -r requirements.txt
-```
-
 ### Requirements
 
+See the `requirements.txt` file located at the root folder.
 
 * Python 3.x
 * Pillow 6.2.0
@@ -31,6 +25,13 @@ pip install -r requirements.txt
 
 And:
 * Ghostscript
+
+### Mac OS X
+
+```console
+brew install python3 cairo libffi ghostscript
+pip install -r requirements.txt
+```
 
 ## Supported elements
 
@@ -120,13 +121,13 @@ text `{code content}` text
 
 ## Usage
 
-You just need to `git clone` the project.
+You just need to `git clone` the project:
 
 ```console
 git clone https://github.com/42-AI/42ai_pdf_builder
 ```
 
-And make sure you are using Python 3.
+And make sure you are using Python 3:
 
 ```console
 $> python -V
