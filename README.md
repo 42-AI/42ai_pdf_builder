@@ -62,7 +62,7 @@ The `pdfbuilder` supports the following syntax.
 ### Image
 **Warning: any image inserted using `![image info](path/to/img)` is not supported.**
 ```
-<img src="{image_path}" width={image_width} height={image_height}>
+<img src="{image_path}" width={image_width} height={image_height}/>
 ```
 
 ### Paragraph
