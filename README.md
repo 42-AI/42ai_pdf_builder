@@ -14,6 +14,7 @@
 
 ### Requirements
 
+See the `requirements.txt` file located at the root folder.
 
 * Python 3.x
 * Pillow 6.2.0
@@ -25,11 +26,18 @@
 And:
 * Ghostscript
 
+### Mac OS X
+
+```console
+brew install python3 cairo libffi ghostscript
+pip install -r requirements.txt
+```
+
 ## Supported elements
 
-The `pdfbuilder` support this syntax.
+The `pdfbuilder` supports the following syntax.
 
-**Warning: if you are using LaTeX syntax, make sure that if a `$` that is not LaTeX to escape it with a backslash.**
+**Warning: if you are using LaTeX syntax, make sure to escape a `$` that is not LaTeX with a backslash.**
 
 ### h1 title
 ```
@@ -52,9 +60,9 @@ The `pdfbuilder` support this syntax.
 ```
 
 ### Image
-**Warning: image declared like `![image info](path/to/img)` is not supported.**
+**Warning: any image inserted using `![image info](path/to/img)` is not supported.**
 ```
-<img src="{image_path}" width={image_width} height={image_height}>
+<img src="image_path" />
 ```
 
 ### Paragraph
@@ -64,7 +72,7 @@ The `pdfbuilder` support this syntax.
 ```
 
 ### Code section
-**Warning: only python and bash language are currently supported.**
+**Warning: only Python and bash languages are currently supported.**
 <pre><code>```{language}
 {content}
 ```</code></pre>
@@ -93,7 +101,7 @@ $$
 This is inline LaTeX, $f(x) = -x$
 ```
 
-### Text formating
+### Text formatting
 #### Bold
 ```
 text **{bold content}** text
@@ -113,20 +121,20 @@ text `{code content}` text
 
 ## Usage
 
-You just need to `git clone` the project.
+You just need to `git clone` the project:
 
 ```console
 git clone https://github.com/42-AI/42ai_pdf_builder
 ```
 
-And make sure you are using Python 3.
+And make sure you are using Python 3:
 
 ```console
 $> python -V
 Python 3.7.*
 ```
 
-Basic utilisation:
+Basic usage:
 ```console
 python pdfbuilder.py /path/to/folder_or_md_file
 ```
