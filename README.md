@@ -1,6 +1,14 @@
-# Pdf_builder
+<p align="center">
+  <img src="assets/logo-42-ai.png" width="200" alt="42 AI Logo" />
+</p>
 
-42AI_pdf_builder is a program to create the subjects of [42 AI](https://github.com/42-AI) bootcamps. Given markdown files, it produces a PDF.
+<h1 align="center">
+	PDF Builder
+</h1>
+<h3 align="center">
+	A PDF builder made to create all our subjects :rocket:
+</h3>
+<br/>
 
 ## One simple rule: Prefer pure markdown!
 
