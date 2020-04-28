@@ -3,199 +3,120 @@
 </p>
 
 <h1 align="center">
-  PDF Builder
+	PDF Builder
 </h1>
 <h3 align="center">
-  A PDF builder made to create all our subjects :rocket:
+	A PDF builder made to create all our subjects :rocket:
 </h3>
 <br/>
 
-## Installation
+## One simple rule: Prefer pure markdown!
 
-### Requirements
+This pdf builder has an implicit rule. The more pure markdown your document is, the better it will look!
 
-See the `requirements.txt` file located at the root folder.
+Concretely this means pure markdown syntax is better handled by this pdf builder than HTML one. 
 
-* Python 3.x
-* Pillow 6.2.0
-* reportlab 3.5.32
-* mistletoe 0.7.2
-* CairoSVG 2.4.2
-* readme2tex 0.0.1b2
+This rule impacts:
+- links (blue color)
+- images (handle width, add a figure title)
 
-And:
-* Ghostscript
+You can find supported formats for lists, images, links, and table in the `assets/syntax_guidelines.md` file.
 
-### Mac OS X
+# Installation
 
-```console
-brew install python3 cairo libffi ghostscript
-pip install -r requirements.txt
-```
+## Docker
 
-## Supported elements
+The pdf builder uses Docker to isolate the execution environment (like a virtual machine). We can install Docker using `assets/init_docker.sh` script.
+This script was originally written by [Alexandre GV.](https://github.com/alexandregv/42toolbox), a student at 42.
 
-The `pdfbuilder` supports the following syntax.
+## Container deployment
 
-**Warning: if you are using LaTeX syntax, make sure to escape a `$` that is not LaTeX with a backslash.**
-
-### h1 title
-```
-# {content}
-```
-
-### h2 title
-```
-## {content}
-```
-
-### h3 title
-```
-### {content}
-```
-
-### List
-```
-* {content}
-```
-
-### Image
-**Warning: any image inserted using `![image info](path/to/img)` is not supported.**
-```
-<img src="image_path" />
-```
-
-### Paragraph
-**Warning: content of paragraph can only be `<img />` or simple text.**
-```
-<p>{content}</p>
-```
-
-### Code section
-**Warning: only Python and bash languages are currently supported.**
-<pre><code>```{language}
-{content}
-```</code></pre>
-
-### Table
-```
-|                  |                  |
-| ----------------:| ---------------- |
-|   {content}      |   {content}      |
-|   {content}      |   {content}      |
-|   {content}      |   {content}      |
-|   {content}      |   {content}      |
-```
-
-### LaTeX
-**Warning: use `--latex`.**
-```
-$$
-f(x) = \frac{1} {1 + e^{-x}}
-$$
-```
-
-### Inline LaTeX
-**Warning: use `--latex`.**
-```
-This is inline LaTeX, $f(x) = -x$
-```
-
-### Text formatting
-#### Bold
-```
-text **{bold content}** text
-text *{bold content}* text
-```
-
-#### Italic
-```
-text __{italic content}__ text
-text _{italic content}_ text
-```
-
-#### Code highlight
-```
-text `{code content}` text
-```
-
-## Usage
-
-You just need to `git clone` the project:
+First, we need to build the docker image for pdf_builder. Our image will be named `pdf_builder`.
 
 ```console
-git clone https://github.com/42-AI/42ai_pdf_builder
+DOCKER_BUILDKIT=1 docker build -t pdf_builder .
 ```
 
-And make sure you are using Python 3:
+nb: the `DOCKER_BUILDKIT` option is an optimization for the build (parallelizes download and add a delta system for consecutive builds). It also has a cache you need to prune if you want to save some space (see the end of README).
+
+Then we can run the docker container. Our docker container will also be named `pdf_builder`. 
 
 ```console
-$> python -V
-Python 3.7.*
+docker run --name pdf_builder -d -t pdf_builder
 ```
 
-Basic usage:
+The container is ready for use!
+
+## Pdf builds
+
+First, we need to connect to the docker container.
+
 ```console
-python pdfbuilder.py /path/to/folder_or_md_file
+docker exec -it pdf_builder /bin/sh
 ```
 
-With LaTeX compilation:
+We arrive in the `/data` directory of the container with the pdf_builder.
+
 ```console
-python pdfbuilder.py --latex /path/to/folder_or_md_file
+$> ls
+pdf_builder
+$> cd pdf_builder
 ```
 
-With PDF size optimization:
+Here we find the python project `pdf_builder`. Like a script, it can take the following arguments :
+- **bootcamp_title** : the bootcamp title (required) -> "Data Engineering"
+- **pdf_title** : title of the pdf (required) -> "Day00 - PostgreSQL")
+- **output_file** : name of the pdf output file (required) -> "day00.pdf"
+- **input_dir** : the input directory for the day (conflicts with input_file option) -> "bootcamp_data_engineering/day00/"
+- **input_file** : the input file name (for documentation purpose) -> "bootcamp_data_engineering/day00/psycopg2_documentation.md"
+
+The program arguments can also be found with the following command.
+
 ```console
-python pdfbuilder.py --optimize /path/to/folder_or_md_file
+python3 pdf_builder --help
 ```
 
-Build some PDFs:
+Once you are in the pdf_builder directory, you can clone your project.
+
 ```console
-python pdfbuilder.py /path/to/folder_or_md_file /path/to/folder_or_md_file /path/to/folder_or_md_file
+git clone https://github.com/42-AI/bootcamp_data-engineering
 ```
 
-Example:
+Now, you can build your pdf.
+
 ```console
-python pdfbuilder.py --main-title "The Best Bootcamp Ever" --optimize --latex --author '42-ai' day00 day01 day02 day03 day04 rush00
+python3 pdf_builder -b "Data Engineering" -d ~/bootcamp_data-engineering/day00 -t "Day00 - PostgreSQL" -o day00.pdf
 ```
 
-Available options:
-```
-  -h, --help            show this help message and exit
+You now have a pdf file in your container. You can copy it out of your container with the following command.
 
-  -mt MAIN_TITLE, --main-title MAIN_TITLE
-                        main title for a pdf
-
-  -l, --latex           compile latex for every .md file using readme2tex
-                        library, default: False
-
-  -o, --optimize        optimize .pdf size with ghostscript, default: False
-
-  -a AUTHOR, --author AUTHOR
-                        change pdf author metadata
-
-  -c CREATOR, --creator CREATOR
-                        change pdf creator metadata
-
-  -s SUBJECT, --subject SUBJECT
-                        change pdf subject metadata
-
-  -k KEYWORDS [KEYWORDS ...], --keywords KEYWORDS [KEYWORDS ...]
-                        add pdf keywords metadata
-
-  -bg BACKGROUND, --background BACKGROUND
-                        path to pdf background
-
-  -lg LOGO, --logo LOGO
-                        path to main page logo
-
-  -st STYLE, --style STYLE
-                        overall style used
+```console
+docker cp pdf_builder:/data/day00.pdf .
 ```
 
-## Acknowledgements
+You finally have the pdf in your laptop filesystem, enjoy!
 
-### Contributors
+## Destroy Containers and Images
 
-* Maxime Choulika (maxime@42ai.fr)
-* Antoine Fourès (afoures@student.42.fr)
+When you are done, you can destroy the container and image with the following commands.
+
+```console
+docker stop pdf_builder
+docker rm pdf_builder
+docker image rm pdf_builder
+```
+
+## Free caches and remaining images (DANGEROUS)
+
+With this command, everything linked to docker (images, caches, containers) are removed. It's like if you restarted with a freshly installed docker. This allows you to free memory space.
+
+```console
+docker rm -f $(docker ps -a -q)
+docker rmi -f $(docker ps -a -q)
+docker system prune -a
+```
+
+## Contributors
+
+- Francois-Xavier Babin (fbabin@student.42.fr)
+- Mathilde Boivin (mboivin@student.42.fr)
