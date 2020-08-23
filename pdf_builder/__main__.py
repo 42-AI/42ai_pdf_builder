@@ -68,7 +68,6 @@ def main():
     try:
         params_check.check_bootcamp_title(args.bootcamp_title)
         params_check.check_day_title(args.day_title)
-        params_check.check_file_dir(args)
 
         if args.input_dir:  # check and copy the day directory
             params_check.check_input_dir(args.input_dir)

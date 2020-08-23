@@ -1,5 +1,5 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-360/)
-[![Build Status](https://travis-ci.org/fxbabin/expert_system.png)](https://travis-ci.org/fxbabin/pdf_builder_v2)
+[![Build Status](https://travis-ci.org/fxbabin/expert_system.png)](https://travis-ci.org/fxbabin/pdf_builder)
 
 <p align="center">
   <img src="assets/logo-42-ai.png" width="200" alt="42 AI Logo" />
