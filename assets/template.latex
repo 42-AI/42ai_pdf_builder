@@ -347,6 +347,8 @@ $endif$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Added packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\setcounter{MaxMatrixCols}{20}
+\usepackage{cancel}
 \usepackage{calc}
 \usepackage{eso-pic}
 \newlength{\PageFrameTopMargin}
