@@ -1,33 +1,41 @@
-#==============================================================================#
-#=============================== LIBRAIRIES ===================================#
-#==============================================================================#
+# ============================================================================#
+# =============================== LIBRAIRIES =================================#
+# ============================================================================#
 
-import re
 import os
-#from pdf_builder import utils
-from utils import error, sub_run, run_task
+import re
 
-#==============================================================================#
-#================================ FUNCTIONS ===================================#
-#==============================================================================#
+from utils import error, sub_run
 
 
-@run_task("Check bootcamp title")
-def check_bootcamp_title(title:str):
-    if not title or len(title) < 3:
-        error("title too short (< 3 chars)")
-    #check bootcamp title only has alpha char and space
-    if not all(c.isalpha() or c.isspace() for c in title):
-        error("invalid title chars ([A-Za-z ] allowed)")
-
-    #check len of bootcamp title
-    if not len(title) < 30:
-        error("invalid title len (> 30 chars)")       
+# ============================================================================#
+# ================================ FUNCTIONS =================================#
+# ============================================================================#
 
 
-@run_task("Check input dir")
-def check_input_dir(directory:str):
-    #check directory is in the format dayXX
+def check_bootcamp_title(title: str):
+    """
+    Check the format of bootcamp title
+
+    Args:
+        title (str): bootcamp title
+    """
+    if not title or len(title) < 3 or len(title) > 20:
+        error("invalid bootcamp title length ! (length must be between \
+3 and 20)")
+    if re.match(r'![A-Za-z ]', title):
+        error("invalid bootcamp title chars ([A-Za-z ] allowed)")
+    return (True)
+
+
+def check_input_dir(directory: str):
+    """
+    Check the bootcamp directory file organization
+
+    Args:
+        directory (str): bootcamp day directory
+    """
+    # check directory is in the format dayXX
     while directory[-1] == '/':
         directory = directory[:-1]
     dir = directory.split('/')[-1]
@@ -35,38 +43,49 @@ def check_input_dir(directory:str):
     if not regex.search(dir):
         error("'{}' invalid day directory (dayXX allowed)".format(directory))
 
-    #check if it is a directory
+    # check if it is a directory
     if not os.path.isdir(directory):
         error("'{}' is not a directory !".format(directory))
 
-    #check directory has a dayXX.md
+    # check directory has a dayXX.md
     ls_day = sub_run("ls {}/day*.md".format(directory))
     if ls_day.stderr:
         error("markdown for day missing")
 
-    #check directory has exXX.md files
+    # check directory has exXX.md files
     ls_ex = sub_run("ls {}/ex*/ex*.md".format(directory))
     if ls_ex.stderr:
         error("markdown for exercices missing")
 
 
-@run_task("Check input file")
-def check_input_file(input_file:str):
+def check_input_file(input_file: str):
+    """
+    Check if file exists and is markdown.
+
+    Args:
+        input_file (str): file name
+
+    """
     if not os.path.isfile(input_file):
         error("'{}' is not a file !".format(input_file))
     if input_file.split('.')[-1] != "md":
-         error("'{}' is not a markdown file".format(input_file))
+        error("'{}' is not a markdown file".format(input_file))
 
 
-@run_task("Check day title")
-def check_day_title(title:str):
-    regex = re.compile(r'^Day[0-9]{2} - .*')
-    if not regex.search(title):
-        error("'{}' invalid Day title (must be formatted as follows \"DayXX - ...\")".format(title))
+def check_day_title(title: str):
+    """
+    Check the day title format.
 
+    Args:
+        title (str): title
 
-@run_task("Check file or folder")
-def check_file_dir(args):
-    if args.input_dir and args.input_file:
-        error("you provided a file AND a folder, please\
-               provide a file OR a folder !")
+    """
+    if not title or len(title) < 11 or len(title) > 40:
+        error("invalid day title length ! (length must be between\
+ 11 and 40)")
+    if re.match(r'![A-Za-z -]', title):
+        error("invalid day title chars ([A-Za-z -] allowed)")
+    if re.match(r'!(^Day[0-9]{2} - .*)', title):
+        error("invalid day title ! (it must be formatted as follows\
+             \"DayXX - ...\")")
+    return (True)

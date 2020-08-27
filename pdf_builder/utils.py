@@ -4,66 +4,64 @@
 #   LIBRAIRIES   #
 ##################
 
-import sys
-import logging
 import subprocess
+import sys
 
-OKGREEN = '\033[92m'
-FAIL = '\033[91m'
-ENDC = '\033[0m'
-
-# create logger
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
-formatter = logging.Formatter("%(asctime)s :: %(levelname)s :: %(message)s",
-                              "%Y-%m-%d %H:%M:%S")
-ch.setFormatter(formatter)
-logger.addHandler(ch)
 
 #################
 #   FUNCTIONS   #
 #################
 
 
-def error(s):
-    raise Exception("Error :: {}".format(s))
+def error(s, Warn=False, infile=None, line_nb=-1):
+    """
+    Raises error or warning at file/line precision.
 
+    Args:
+        s (undefined)           : error message
+        Warn=False (undefined)  : Warn flag (true if warning, else error)
+        infile=None (undefined) : file name
+        line_nb=-1 (undefined)  : line number
+    """
+    out = "[Error]" if not Warn else "[Warning]"
+    out += " {}".format(infile) if infile else ""
+    out += ":{}".format(line_nb + 1) if line_nb > -1 else ""
 
-def run_task(desc=None, oneline=True):
-
-    def run_task_decorator(func):
-        task_desc = desc
-
-        def wrapper_func(*args, **kwargs):
-            if not oneline:
-                logger.info("{} started.".format(task_desc.format(*args)))
-            res = func(*args, **kwargs)
-            logger.info("{} Done !".format(task_desc.format(*args)))
-            return(res)
-        return wrapper_func
-    return run_task_decorator
+    if not Warn:
+        raise Exception("{} :: {}".format(out, s))
+    print("{} : {}".format(out, s))
 
 
 def sub_decorator(func):
+    """
+    Decorator to run command lines, catch exceptions.
+
+    Args:
+        func (undefined):
+
+    Decorator for subprocess run (try catch errors)
+    """
     def wrapper_func(*args, **kwargs):
         try:
             res = func(*args, **kwargs)
-            logger.info(r"'{}' Done !".format(
-                r'{}'.format("".join(*args).replace('\n', '\\n'))
-            ))
-            return(res)
+            return (res)
         except Exception as e:
-            logger.info("{} Exception Detected !\n{}".format(*args, e))
+            print("{} Exception Detected !\n{}".format(*args, e))
             sys.exit(-1)
+
     return wrapper_func
 
 
 @sub_decorator
 def sub_run(command):
+    """
+    Run a bash command and show output/error.
+
+    Args:
+        command (undefined): command line
+    """
     out = subprocess.run(command,
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+                         shell=True,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.PIPE)
     return (out)

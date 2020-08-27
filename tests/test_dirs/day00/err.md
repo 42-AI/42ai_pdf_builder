@@ -1,2 +1,0 @@
-eddede '\n' dwwdwd
-wewe
