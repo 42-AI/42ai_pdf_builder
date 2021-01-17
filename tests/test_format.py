@@ -1,4 +1,8 @@
 import pytest
+import sys, os
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
+sys.path.insert(0, myPath + '/../pdf_builder/')
 
 from pdf_builder.params_check import \
     check_bootcamp_title,\
@@ -11,13 +15,15 @@ from pdf_builder.files_formatting import \
     change_equations_format,\
     change_empty_code_block_style
 
+from pdf_builder.utils import sub_run
+
 class Test_check_bootcamp_title:
 
     @pytest.mark.parametrize("bootcamp_title", [
         None,
         "",
         "ti",
-        "abcdefghijklmnopqrstuvwxyz"
+        "abcdefghijklmnopqrstuvwxyz0123456789"
     ])
     def test_bootcamp_title_error_length(self, bootcamp_title):
         with pytest.raises(Exception, match=r".* invalid bootcamp title length .*"):
@@ -49,11 +55,11 @@ class Test_check_day_title:
             check_day_title(day_title)
 
     def test_day_title_error_char(self):
-        with pytest.raises(Exception, match=r".* invalid day title chars .*"):
+        with pytest.raises(Exception, match=r".* invalid day/module title chars .*"):
             check_day_title('Day00 - abcdefghijklmnopqrstuvwxyz?')
     
     def test_day_title_error(self):
-        with pytest.raises(Exception, match=r".* invalid day title format .*"):
+        with pytest.raises(Exception, match=r".* invalid day/module title format .*"):
             check_day_title('Day - abcdefghijklmnopqrstuvwxyz')
     
     @pytest.mark.parametrize("day_title", [
@@ -75,7 +81,7 @@ class Test_change_img_format:
 
     @pytest.mark.parametrize("line,expected", [
         ("![](path)",                                       "\n![path](tmp/assets/path)\n"),
-        ("![title](path){}".format(""),                              "\n![title](tmp/assets/path)\n"),
+        ("![title](path){}".format(""),                     "\n![title](tmp/assets/path)\n"),
         ("![title](path){width=450px}\n",                   "\n![title](tmp/assets/path){width=450px}\n"),
         ("<img src='src/toto.png' />\n",                    "\n![toto](tmp/assets/toto.png)\n"),
         (" <img src='src/toto.png' />\n",                   "\n![toto](tmp/assets/toto.png)\n"),
