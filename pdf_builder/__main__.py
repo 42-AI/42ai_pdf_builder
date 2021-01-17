@@ -7,8 +7,25 @@
 import argparse
 import sys
 
-import files_formatting
-import params_check
+from files_formatting import \
+    day_files_cpy,\
+    input_file_cpy,\
+    insert_bootcamp_title,\
+    insert_day_title,\
+    files_format,\
+    change_list_format,\
+    change_header_format,\
+    change_equations_format,\
+    change_empty_code_block_style,\
+    change_img_format,\
+    set_url_color,\
+    run_pandoc,\
+    run_pandoc_all
+from params_check import \
+    check_bootcamp_title,\
+    check_day_title,\
+    check_input_dir,\
+    check_input_file
 from utils import sub_run
 
 
@@ -66,16 +83,15 @@ def main():
     # CHECK PARAMETERS AND FILES
     ###############################
     try:
-        params_check.check_bootcamp_title(args.bootcamp_title)
-        params_check.check_day_title(args.day_title)
+        check_bootcamp_title(args.bootcamp_title)
+        check_day_title(args.day_title)
 
         if args.input_dir:  # check and copy the day directory
-            params_check.check_input_dir(args.input_dir)
-            files_formatting.day_files_cpy(args.input_dir, args.template_file)
+            check_input_dir(args.input_dir)
+            day_files_cpy(args.input_dir, args.template_file)
         else:               # check and copy the documentation file
-            params_check.check_input_file(args.input_file)
-            files_formatting.input_file_cpy(
-                args.input_file, args.template_file)
+            check_input_file(args.input_file)
+            input_file_cpy(args.input_file, args.template_file)
     except Exception as e:
         print(e)
         sys.exit(-1)
@@ -83,28 +99,28 @@ def main():
     # FILES FORMATTING
     #####################
     try:
-        files_formatting.insert_bootcamp_title(args)
-        files_formatting.insert_day_title(args)
+        insert_bootcamp_title(args)
+        insert_day_title(args)
         files = sub_run("ls tmp/*.md").stdout.strip()
         for f in files.decode().split('\n'):
             content = None
-            files_formatting.files_format(f)
+            files_format(f)
             with open(f, 'r') as infile:
                 content = infile.read()
-                content = files_formatting.change_img_format(f, content)
-                content = files_formatting.change_header_format(f, content)
-                content = files_formatting.change_list_format(f, content)
-                content = files_formatting.change_empty_code_block_style(
+                content = change_img_format(f, content)
+                content = change_header_format(f, content)
+                content = change_list_format(f, content)
+                content = change_empty_code_block_style(
                     f, content)
-                content = files_formatting.change_equations_format(f, content)
-                content = files_formatting.set_url_color(f, content)
+                content = change_equations_format(f, content)
+                content = set_url_color(f, content)
             with open(f + ".tmp", 'w') as outfile:
                 outfile.write(content)
             sub_run("mv {0}.tmp {0}".format(f))
             if args.debug:
-                files_formatting.run_pandoc(f)
+                run_pandoc(f)
         # GENERATING PDF OUTPUT
-        files_formatting.run_pandoc_all(
+        run_pandoc_all(
             args.output_file.split('/')[-1], args.debug)
         print("Successfully built pdf !")
     except Exception as e:
