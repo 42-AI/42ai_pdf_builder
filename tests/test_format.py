@@ -1,442 +1,170 @@
 import pytest
-import os,sys,inspect
-currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0,parentdir)
-sys.path.insert(0,parentdir+"/pdf_builder/")
 
-from pdf_builder import check_bootcamp_title,\
-                        check_day_title,\
-                        change_img_format,\
-                        change_header_format,\
-                        change_list_format,\
-                        change_empty_code_block_style,\
-                        change_equations_format
+from pdf_builder.params_check import \
+    check_bootcamp_title,\
+    check_day_title
 
+from pdf_builder.files_formatting import \
+    change_img_format,\
+    change_header_format,\
+    change_list_format,\
+    change_equations_format,\
+    change_empty_code_block_style
 
 class Test_check_bootcamp_title:
-    def test_none_title(self):
-        try:
-            res = check_bootcamp_title(None)
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid bootcamp title length ! (length must be between 3 and 20)'
 
-    def test_empty_title(self):
-        try:
-            res = check_bootcamp_title('')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid bootcamp title length ! (length must be between 3 and 20)'
+    @pytest.mark.parametrize("bootcamp_title", [
+        None,
+        "",
+        "ti",
+        "abcdefghijklmnopqrstuvwxyz"
+    ])
+    def test_bootcamp_title_error_length(self, bootcamp_title):
+        with pytest.raises(Exception, match=r".* invalid bootcamp title length .*"):
+            check_bootcamp_title(bootcamp_title)
 
-    def test_short_title(self):
-        try:
-            res = check_bootcamp_title('ti')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid bootcamp title length ! (length must be between 3 and 20)'
+    def test_bootcamp_title_error_char(self):
+        with pytest.raises(Exception, match=r".* invalid bootcamp title chars .*"):
+            check_bootcamp_title("res->/?fft")
 
-    def test_long_title(self):
-        try:
-            res = check_bootcamp_title('abcdefghijklmnopqrstuvwxyz')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid bootcamp title length ! (length must be between 3 and 20)'
-    
-    def test_spec_char_title(self):
-        try:
-            res = check_bootcamp_title('res->/?fft')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid bootcamp title chars ([A-Za-z ] allowed)'
+    @pytest.mark.parametrize("bootcamp_title", [
+        "Python",
+        "Machine Learning",
+        "Data Engineering"
+    ])
+    def test_bootcamp_title_ok(self, bootcamp_title):
+        assert check_bootcamp_title(bootcamp_title) == True
 
-    def test_title_ok_1(self):
-        try:
-            res = check_bootcamp_title('Python')
-            assert res == True
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_title_ok_2(self):
-        try:
-            res = check_bootcamp_title('Machine Learning')
-            assert res == True
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_title_ok_3(self):
-        try:
-            res = check_bootcamp_title('Data Engineering')
-            assert res == True
-        except Exception as e:
-            assert str(e) == ''
 
 class Test_check_day_title:
-    def test_none_title(self):
-        try:
-            res = check_day_title(None)
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid day title length ! (length must be between 11 and 40)'
 
-    def test_empty_title(self):
-        try:
-            res = check_day_title('')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid day title length ! (length must be between 11 and 40)'
+    @pytest.mark.parametrize("day_title", [
+        None,
+        "",
+        "Day00 - Dd",
+        "Day00 - abcdefghijklmnopqrstuvwxyz0123456789"
+    ])
+    def test_day_title_error_length(self, day_title):
+        with pytest.raises(Exception, match=r".* invalid day title length .*"):
+            check_day_title(day_title)
 
-    def test_short_title(self):
-        try:
-            res = check_day_title('Day00 - Dd')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid day title length ! (length must be between 11 and 40)'
-
-    def test_long_title(self):
-        try:
-            res = check_day_title('Day00 - abcdefghijklmnopqrstuvwxyz0123456789')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid day title length ! (length must be between 11 and 40)'
+    def test_day_title_error_char(self):
+        with pytest.raises(Exception, match=r".* invalid day title chars .*"):
+            check_day_title('Day00 - abcdefghijklmnopqrstuvwxyz?')
     
-    def test_spec_char_title(self):
-        try:
-            res = check_day_title('Day00 - abcdefghijklmnopqrstuvwxyz?')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid day title chars ([A-Za-z -] allowed)'
+    def test_day_title_error(self):
+        with pytest.raises(Exception, match=r".* invalid day title format .*"):
+            check_day_title('Day - abcdefghijklmnopqrstuvwxyz')
     
-    def test_format_title(self):
-        try:
-            res = check_day_title('Day - abcdefghijklmnopqrstuvwxyz?')
-            assert res == True
-        except Exception as e:
-            assert str(e) == '[Error] :: invalid day title ! (it must be formatted as follows \"DayXX - ...\")'
+    @pytest.mark.parametrize("day_title", [
+        "Day00 - PostgreSQL",
+        "Day01 - Elasticsearch Logstash Kibana"
+    ])
+    def test_day_title_error_length(self, day_title):
+        assert check_day_title(day_title) == True
 
-    def test_title_ok_1(self):
-        try:
-            res = check_day_title('Day00 - PostgreSQL')
-            assert res == True
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_title_ok_2(self):
-        try:
-            res = check_day_title('Day01 - Elasticsearch Logstash Kibana')
-            assert res == True
-        except Exception as e:
-            assert str(e) == ''
 
 class Test_change_img_format:
-    def test_empty_file(self):
-        try:
-            res = change_img_format("toto.md", "")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md :: empty file !'
+    @pytest.mark.parametrize("line", [
+        "![title]()",
+        "<img src='' />\n"
+    ])
+    def test_empty_image_path(self, line):
+        with pytest.raises(Exception, match=r".* toto.md.*? :: empty image path .*"):
+            change_img_format("toto.md", line)
 
-    def test_empty_image_title(self):
-        try:
-            res = change_img_format("toto.md", "![](path)")
-            assert res == "\n![path](tmp/assets/path)\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_empty_image_path(self):
-        try:
-            res = change_img_format("toto.md", "![title]()")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:1 :: empty image path !'
-    
-    def test_empty_image_style(self):
-        try:
-            res = change_img_format("toto.md", r"![title](path)\{\}")
-            assert res == "\n![title](tmp/assets/path)\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_image_md_style_ko(self):
-        try:
-            res = change_img_format("toto.md", "![title](path){width=450x}")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == "[Error] toto.md:1 :: wrong image style format ! (example: '{width=250px}')"
+    @pytest.mark.parametrize("line,expected", [
+        ("![](path)",                                       "\n![path](tmp/assets/path)\n"),
+        ("![title](path){}".format(""),                              "\n![title](tmp/assets/path)\n"),
+        ("![title](path){width=450px}\n",                   "\n![title](tmp/assets/path){width=450px}\n"),
+        ("<img src='src/toto.png' />\n",                    "\n![toto](tmp/assets/toto.png)\n"),
+        (" <img src='src/toto.png' />\n",                   "\n![toto](tmp/assets/toto.png)\n"),
+        (" ![toto](src/toto.png){width=450px}\n",           "\n![toto](tmp/assets/toto.png){width=450px}\n"),
+        ("\n\n1\n\n2\n\n",                                  "\n\n1\n\n2\n"),
+        ("1\n\n![toto](src/toto.png){width=450px}\n\n2\n", "1\n\n\n![toto](tmp/assets/toto.png){width=450px}\n\n2\n")
+    ])
+    def test_image_path_ok(self, line, expected):
+        assert change_img_format("toto.md", line) == expected
 
-    def test_image_md_ok(self):
-        try:
-            res = change_img_format("toto.md", "![title](path){width=450px}\n")
-            assert res == "\n![title](tmp/assets/path){width=450px}\n"
-        except Exception as e:
-            assert str(e) == ""
-
-    def test_empty_html_image_title(self):
-        try:
-            res = change_img_format("toto.md", "<img src='src/toto.png' />\n")
-            assert res == "\n![toto](tmp/assets/toto.png)\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_empty_html_image_title2(self):
-        try:
-            res = change_img_format("toto.md", """<img src="src/toto.png" />\n""")
-            assert res == "\n![toto](tmp/assets/toto.png)\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_empty_html_image_path(self):
-        try:
-            res = change_img_format("toto.md", "<img src='' />\n")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:1 :: empty image path !'
-    
-    def test_empty_html_image_space_front(self):
-        try:
-            res = change_img_format("toto.md", " <img src='src/toto.png' />\n")
-            assert res == "\n![toto](tmp/assets/toto.png)\n"
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:1 :: empty image path !'
-    
-    def test_empty_image_space_front(self):
-        try:
-            res = change_img_format("toto.md", " ![toto](src/toto.png){width=450px}\n")
-            assert res == "\n![toto](tmp/assets/toto.png){width=450px}\n"
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:1 :: empty image path !'
-    
-    def test_no_images_multi_lines(self):
-        try:
-            res = change_img_format("toto.md", """\n\n1\n\n2\n\n""")
-            assert res == "\n\n1\n\n2\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_images_multi_lines(self):
-        try:
-            res = change_img_format("toto.md", """1\n\n![toto](src/toto.png){width=450px}\n\n2\n""")
-            assert res == "1\n\n\n![toto](tmp/assets/toto.png){width=450px}\n\n2\n"
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:1 :: empty image path !'
+    def test_image_format_error(self):
+        with pytest.raises(Exception, match=r".* toto.md.*? :: wrong image style format .*"):
+            change_img_format("toto.md", "![title](path){width=450x}")
 
 class Test_change_header_format:
-    def test_empty_file(self):
-        try:
-            res = change_header_format("toto.md", "")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md :: empty file !'
-    
-    def test_header_1(self):
-        try:
-            res = change_header_format("toto.md", "# header\n")
-            assert res == "# header\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_header_4(self):
-        try:
-            res = change_header_format("toto.md", "#### header\n")
-            assert res == "#### header\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_header_5(self):
-        try:
-            res = change_header_format("toto.md", "##### header\n")
-            assert res == "##### header\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_header_4_space_front(_self):
-        try:
-            res = change_header_format("toto.md", "    ####  header\n")
-            assert res == "#### header\n"
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:1 :: too much space(s) in front of header !'
-    
-    def test_header_5_space_front(self):
-        try:
-            res = change_header_format("toto.md", "     ##### header\n")
-            assert res == "     ##### header\n"
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:1 :: too much space(s) in front of header !'
-    
-    def test_header_4_space_back(_self):
-        try:
-            res = change_header_format("toto.md", "####    header\n")
-            assert res == "#### header\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_comment_in_block(self):
-        try:
-            res = change_header_format("toto.md", "\n\n```\n    ## hello\n```\nheader\n")
-            assert res == "\n\n```\n    ## hello\n```\nheader\n"
-        except Exception as e:
-            assert str(e) == ''
+    def test_change_header_empty_file(self):
+        with pytest.raises(Exception, match=r".* toto.md.*? :: empty file .*"):
+            change_header_format("toto.md", "")
+
+    @pytest.mark.parametrize("line,expected", [
+        ("# header\n",                           "# header\n"),
+        ("#### header\n",                        "#### header\n"),
+        ("##### header\n",                       "##### header\n"),
+        ("     ##### header\n",                  "     ##### header\n"),
+        ("####    header\n",                     "#### header\n"),
+        ("\n\n```\n    ## hello\n```\nheader\n", "\n\n```\n    ## hello\n```\nheader\n")
+    ])
+    def test_change_header_ok(self, line, expected):
+        assert change_header_format("toto.md", line) == expected
+
+    def test_change_header_space_error(self):
+        with pytest.raises(Exception, match=r".* toto.md.*? :: too much space\(s\) in front of header .*"):
+            change_header_format("toto.md", "    ####  header\n")
 
 class Test_change_list_format:
     def test_empty_file(self):
-        try:
-            res = change_list_format("toto.md", "")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md :: empty file !'
-    
-    def test_list_1(self):
-        try:
-            res = change_list_format("toto.md", "l1\n- ttt\nl3\n")
-            assert res == "l1\n\n- ttt\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
+        with pytest.raises(Exception, match=r".* toto.md.*? :: empty file .*"):
+            change_list_format("toto.md", "")
 
-    def test_list_2(self):
-        try:
-            res = change_list_format("toto.md", "l1\n- ttt\n- aaa\nl3\n")
-            assert res == "l1\n\n- ttt\n\n- aaa\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
+    @pytest.mark.parametrize("lines,expected", [
+        ("l1\n- ttt\nl3\n",        "l1\n\n- ttt\nl3\n"),
+        ("l1\n- ttt\n- aaa\nl3\n", "l1\n\n- ttt\n\n- aaa\nl3\n"),
+        ("l1\n- ttt\n\n- aaa\nl3\n", "l1\n\n- ttt\n\n- aaa\nl3\n"),
+        ("l1:\n* ttt\n\n* aaa\nl3\n", "l1:\n\n* ttt\n\n* aaa\nl3\n"),
+        ("l1\n- ttt\n\n- aaa\n    - bbb\n- ccc\nl3\n", "l1\n\n- ttt\n\n- aaa\n\n    - bbb\n\n- ccc\nl3\n"),
+        ("l1\n- ttt\n\n- aaa\n    - bbb\n        - ddd\n    - eee\n- ccc\nl3\n", "l1\n\n- ttt\n\n- aaa\n\n    - bbb\n\n        - ddd\n\n    - eee\n\n- ccc\nl3\n"),
+        ("`cookbook` will store 3 recipes:\n* sandwich\n* cake\n* salad\n", "`cookbook` will store 3 recipes:\n\n* sandwich\n\n* cake\n\n* salad\n"),
+        ("l1\n```\n- ttt\n  - aaa\n```\nl3\n", "l1\n```\n- ttt\n  - aaa\n```\nl3\n"),
+        ("l1\n$$\n- ttt\n  - aaa\n$$\nl3\n", "l1\n$$\n- ttt\n  - aaa\n$$\nl3\n")
+    ])
+    def test_list_ok(self, lines, expected):
+        assert change_list_format("toto.md", lines) == expected
     
-    def test_list_2_bis(self):
-        try:
-            res = change_list_format("toto.md", "l1\n- ttt\n\n- aaa\nl3\n")
-            assert res == "l1\n\n- ttt\n\n- aaa\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_list_2_dots(self):
-        try:
-            res = change_list_format("toto.md", "l1:\n* ttt\n\n* aaa\nl3\n")
-            assert res == "l1:\n\n* ttt\n\n* aaa\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_list_inner_1(self):
-        try:
-            res = change_list_format("toto.md", "l1\n- ttt\n\n- aaa\n    - bbb\n- ccc\nl3\n")
-            assert res == "l1\n\n- ttt\n\n- aaa\n\n    - bbb\n\n- ccc\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_list_inner_1_wrong_factor(self):
-        try:
-            res = change_list_format("toto.md", "l1\n- ttt\n\n- aaa\n   - bbb\n- ccc\nl3\n")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:5 :: number of spaces in front of list is not a factor of 4 !'
-    
-    def test_list_inner_2(self):
-        try:
-            res = change_list_format("toto.md", "l1\n- ttt\n\n- aaa\n    - bbb\n        - ddd\n    - eee\n- ccc\nl3\n")
-            assert res == "l1\n\n- ttt\n\n- aaa\n\n    - bbb\n\n        - ddd\n\n    - eee\n\n- ccc\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
-        
-    def test_list_inner_2_wrong_factor(self):
-        try:
-            res = change_list_format("toto.md", "l1\n- ttt\n\n- aaa\n    - bbb\n         - ddd\n    - eee\n- ccc\nl3\n")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:6 :: number of spaces in front of list is not a factor of 4 !'
-    
-    def test_list_stars(self):
-        try:
-            res = change_list_format("toto.md", "`cookbook` will store 3 recipes:\n* sandwich\n* cake\n* salad\n")
-            assert res == "`cookbook` will store 3 recipes:\n\n* sandwich\n\n* cake\n\n* salad\n"
-        except Exception as e:
-            assert str(e) == ''
-
-    def test_list_in_code(self):
-        try:
-            res = change_list_format("toto.md", "l1\n```\n- ttt\n  - aaa\n```\nl3\n")
-            assert res == "l1\n```\n- ttt\n  - aaa\n```\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_list_in_equation(self):
-        try:
-            res = change_list_format("toto.md", "l1\n$$\n- ttt\n  - aaa\n$$\nl3\n")
-            assert res == "l1\n$$\n- ttt\n  - aaa\n$$\nl3\n"
-        except Exception as e:
-            assert str(e) == ''
+    @pytest.mark.parametrize("lines", [
+        "l1\n- ttt\n\n- aaa\n   - bbb\n- ccc\nl3\n",
+        "l1\n- ttt\n\n- aaa\n    - bbb\n         - ddd\n    - eee\n- ccc\nl3\n"
+    ])
+    def test_empty_file(self, lines):
+        with pytest.raises(Exception, match=r".* toto.md.*? :: number of spaces in front of list is not a factor of 4 .*"):
+            change_list_format("toto.md", lines)
     
 class Test_change_empty_block_style:
+
     def test_empty_file(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md :: empty file !'
+        with pytest.raises(Exception, match=r".* toto.md.*? :: empty file.*"):
+            change_empty_code_block_style("toto.md", "")
     
-    def test_python_block(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "dd\n```python\ndd\n```\ndd\n")
-            assert res == "dd\n```python\ndd\n```\ndd\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_bash_block(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "dd\n```bash\ndd\n```\ndd\n")
-            assert res == "dd\n```txt\ndd\n```\ndd\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_sh_block(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "dd\n```sh\ndd\n```\ndd\n")
-            assert res == "dd\n```txt\ndd\n```\ndd\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_console_block(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "dd\n```console\ndd\n```\ndd\n")
-            assert res == "dd\n```txt\ndd\n```\ndd\n"
-        except Exception as e:
-            assert str(e) == ''
-    
-    def test_empty_block(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "dd\n```\ndd\n```\ndd\n")
-            assert res == "dd\n```txt\ndd\n```\ndd\n"
-        except Exception as e:
-            assert str(e) == ''
+    @pytest.mark.parametrize("lines,expected", [
+        ("dd\n```python\ndd\n```\ndd\n", "dd\n```python\ndd\n```\ndd\n"),
+        ("dd\n```sh\ndd\n```\ndd\n", "dd\n```txt\ndd\n```\ndd\n"),
+        ("dd\n```console\ndd\n```\ndd\n", "dd\n```txt\ndd\n```\ndd\n"),
+        ("dd\n```\ndd\n```\ndd\n```python\ndd\n```\ndd\n```\ndd\n```\ndd\n", "dd\n```txt\ndd\n```\ndd\n```python\ndd\n```\ndd\n```txt\ndd\n```\ndd\n")
+    ])
+    def test_python_block_ok(self, lines, expected):
+        assert change_empty_code_block_style("toto.md", lines) == expected
 
     def test_wrong_block_number(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "dd\n```\ndd\n```\ndd\n```\ndd\n")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:6 :: could not find closing code snippet !'
-    
-    def test_multiple_code_blocks(self):
-        try:
-            res = change_empty_code_block_style("toto.md", "dd\n```\ndd\n```\ndd\n```python\ndd\n```\ndd\n```\ndd\n```\ndd\n")
-            assert res == "dd\n```txt\ndd\n```\ndd\n```python\ndd\n```\ndd\n```txt\ndd\n```\ndd\n"
-        except Exception as e:
-            assert str(e) == '[Error] toto.md :: empty file !'
+        with pytest.raises(Exception, match=r".* toto.md.*? :: could not find closing code snippet .*"):
+            change_empty_code_block_style("toto.md", "dd\n```\ndd\n```\ndd\n```\ndd\n")
 
 class Test_format_equations:
     def test_empty_file(self):
-        try:
-            res = change_equations_format("toto.md", "")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md :: empty file !'
+        with pytest.raises(Exception, match=r".* toto.md.*? :: empty file .*"):
+            change_equations_format("toto.md", "")
     
     def test_frac_replace(self):
-        try:
-            res = change_equations_format("toto.md", "dd\n$$\n\\frac{1/0}\n$$\ndd\n")
-            assert res == "dd\n\\large\n$$\n\\cfrac{1/0}\n$$\n\\normalsize\ndd\n"
-        except Exception as e:
-            assert str(e) == ''
+        res = change_equations_format("toto.md", "dd\n$$\n\\frac{1/0}\n$$\ndd\n")
+        assert res == "dd\n\\large\n$$\n\\cfrac{1/0}\n$$\n\\normalsize\ndd\n"
     
     def test_wrong_number_eq_mark(self):
-        try:
-            res = change_equations_format("toto.md", "dd\n$$\n\\frac{1/0}\n$$\ndd\n$$\ndd\n")
-            assert res == ""
-        except Exception as e:
-            assert str(e) == '[Error] toto.md:6 :: could not find closing equation mark !'
+        with pytest.raises(Exception, match=r".* toto.md.*? :: could not find closing equation mark .*"):
+            change_equations_format("toto.md", "dd\n$$\n\\frac{1/0}\n$$\ndd\n$$\ndd\n")
