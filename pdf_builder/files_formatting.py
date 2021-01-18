@@ -26,7 +26,7 @@ def day_files_cpy(input_dir, template_file):
 
     """
     # retrieve file lists
-    day_f = sub_run("ls {}/day*.md".format(input_dir)).stdout.strip()
+    day_f = sub_run("ls {0}/day*.md || ls {0}/module*.md".format(input_dir)).stdout.strip()
     ex_list = sub_run("ls {}/**/ex*.md".format(input_dir)).stdout
     imgs_dir = sub_run("ls -d {}/assets".format(input_dir))
 
@@ -35,8 +35,7 @@ def day_files_cpy(input_dir, template_file):
     sub_run("mkdir -p tmp")
     if not imgs_dir.stderr:
         sub_run("cp -rp {} tmp/".format(imgs_dir.stdout.decode().strip()))
-    sub_run("cp {} tmp/".format(day_f.decode()))
-    sub_run("cp {} tmp/".format(day_f.decode()))
+    sub_run("cp {} tmp/day.md".format(day_f.decode()))
     sub_run("cp {} tmp/".format(template_file))
     for f in ex_list.split():
         pattern = re.compile(r'(ex[0-9]{2}\.md)$')
@@ -61,7 +60,7 @@ def input_file_cpy(input_file, template_file):
     sub_run("mkdir -p tmp")
 
     # copy input_file into tmp
-    sub_run("cp {} tmp/".format(input_file))
+    sub_run("cp {} tmp/day.md".format(input_file))
     sub_run("cp {} tmp/".format(template_file))
     imgs_dir = sub_run(
         "ls -d {}/assets".format("/".join(input_file.split('/')[:-1])))
@@ -422,7 +421,7 @@ def set_url_color(file_name: str, file_content: str):
 
     if len(file_content) == 0:
         error("empty file !", infile=file_name)
-    for idx, line in enumerate(file_content.rstrip().split('\n')):
+    for line in file_content.rstrip().split('\n'):
         out += line + "\n"
     return (out)
 

@@ -1,6 +1,6 @@
 # !/usr/bin/env python
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(fname):
@@ -13,6 +13,6 @@ setup(
     author="Francois-Xavier Babin & Mathilde Boivin",
     description=("A pdf builder for 42-AI subjects"),
     license="MIT",
-    packages=['pdf_builder', 'tests'],
+    packages=find_packages(),
     long_description=read('README.md'),
 )
