@@ -1,21 +1,30 @@
+#!/usr/bin/env python3
+
+# ============================================================================#
+# =============================== LIBRARIES ==================================#
+# ============================================================================#
+
 import pytest
 import sys, os
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
 sys.path.insert(0, myPath + '/../pdf_builder/')
 
-from pdf_builder.params_check import \
-    check_bootcamp_title,\
-    check_day_title
+from pdf_builder.bootcamp.checker import check_bootcamp_title, check_day_title
 
-from pdf_builder.files_formatting import \
+from pdf_builder.common.format import \
     change_img_format,\
     change_header_format,\
     change_list_format,\
     change_equations_format,\
     change_empty_code_block_style
 
-from pdf_builder.utils import sub_run
+from pdf_builder.common.utils import sub_run
+
+# ============================================================================#
+# ================================ FUNCTIONS =================================#
+# ============================================================================#
+
 
 class Test_check_bootcamp_title:
 
@@ -51,7 +60,7 @@ class Test_check_day_title:
         "Day00 - abcdefghijklmnopqrstuvwxyz0123456789"
     ])
     def test_day_title_error_length(self, day_title):
-        with pytest.raises(Exception, match=r".* invalid day title length .*"):
+        with pytest.raises(Exception, match=r".* invalid day/module title length .*"):
             check_day_title(day_title)
 
     def test_day_title_error_char(self):
@@ -66,7 +75,7 @@ class Test_check_day_title:
         "Day00 - PostgreSQL",
         "Day01 - Elasticsearch Logstash Kibana"
     ])
-    def test_day_title_error_length(self, day_title):
+    def test_day_title_ok(self, day_title):
         assert check_day_title(day_title) == True
 
 
@@ -139,7 +148,7 @@ class Test_change_list_format:
         "l1\n- ttt\n\n- aaa\n   - bbb\n- ccc\nl3\n",
         "l1\n- ttt\n\n- aaa\n    - bbb\n         - ddd\n    - eee\n- ccc\nl3\n"
     ])
-    def test_empty_file(self, lines):
+    def test_error_spaces_factor(self, lines):
         with pytest.raises(Exception, match=r".* toto.md.*? :: number of spaces in front of list is not a factor of 4 .*"):
             change_list_format("toto.md", lines)
     
