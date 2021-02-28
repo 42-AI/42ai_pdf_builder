@@ -1,5 +1,5 @@
 [![Python 3.7](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/downloads/release/python-360/)
-[![Build Status](https://travis-ci.org/fxbabin/expert_system.png)](https://travis-ci.org/fxbabin/pdf_builder)
+[![Build Status](https://travis-ci.org/fxbabin/expert_system.png)](https://travis-ci.org/42-AI/42ai_pdf_builder)
 
 <p align="center">
   <img src="assets/logo-42-ai.png" width="200" alt="42 AI Logo" />
@@ -25,22 +25,45 @@ This rule impacts:
 
 You can find supported formats for lists, images, links, and table in the `assets/syntax_guidelines.md` file.
 
+The pdf_builder supports two modes:
+- simple (for a single project)
+- bootcamp (for bootcamp days)
+
 # Installation
 
-## Docker
+## System installation
 
-The pdf builder uses Docker to isolate the execution environment (like a virtual machine). We can install Docker using `assets/init_docker.sh` script.
-This script was originally written by [Alexandre GV.](https://github.com/alexandregv/42toolbox), a student at 42.
+The pdf_builder uses latex and a library called pandoc, you can follow this [link](https://pandoc.org/installing.html) for the installation procedure of pandoc.
 
-## Container deployment
+Also install the following packages
+```
+tlmgr update --self
+tlmgr install ucs fvextra sectsty ucs cancel framed titlesec
+```
+
+You can install the pdf_builder with pip
+
+```console
+pip install git+https://github.com/42-AI/42ai_pdf_builder.git
+```
+
+## Docker installation
+
+The pdf builder can also use Docker to isolate the execution environment (like a virtual machine). We can install Docker using `assets/init_docker.sh` script.
+This script was originally written by [Alexandre GV.](https://github.com/alexandregv/42toolbox), a 42 student.
+
+A `Dockerfile` is available in the `assets` directory. 
+
+### Container deployment
 
 First, we need to build the docker image for pdf_builder. Our image will be named `pdf_builder`.
 
 ```console
+cd assets/
 DOCKER_BUILDKIT=1 docker build -t pdf_builder .
 ```
 
-nb: the `DOCKER_BUILDKIT` option is an optimization for the build (parallelizes download and add a delta system for consecutive builds). It also has a cache you need to prune if you want to save some space (see the end of README).
+nb: the `DOCKER_BUILDKIT` option is an optimization for the build (parallelizes download and add a delta system for consecutive builds). It also has a cache you will need to prune if you want to save some space (see the end of README).
 
 Then we can run the docker container. Our docker container will also be named `pdf_builder`. 
 
@@ -48,9 +71,7 @@ Then we can run the docker container. Our docker container will also be named `p
 docker run --name pdf_builder -d -t pdf_builder
 ```
 
-The container is ready for use!
-
-## Pdf builds
+### Pdf builds
 
 First, we need to connect to the docker container.
 
@@ -66,20 +87,22 @@ pdf_builder
 $> cd pdf_builder
 ```
 
-Here we find the python project `pdf_builder`. Like a script, it can take the following arguments :
-- **bootcamp_title** : the bootcamp title (required) -> "Data Engineering"
-- **pdf_title** : title of the pdf (required) -> "Day00 - PostgreSQL")
-- **output_file** : name of the pdf output file (required) -> "day00.pdf"
-- **input_dir** : the input directory for the day (conflicts with input_file option) -> "bootcamp_data_engineering/day00/"
-- **input_file** : the input file name (for documentation purpose) -> "bootcamp_data_engineering/day00/psycopg2_documentation.md"
+`pdf-builder simple` supports the following arguments :
+- **project-title** : the project title
+- **input-directory** : input directory
+- **output-path** : Path to save the pdf to
+- **logo-file** : Logo image file to use for the project
+- **template-file** : Latex Template file to use for the project
 
-The program arguments can also be found with the following command.
+`pdf-builder bootcamp` supports the following arguments :
+- **bootcamp-title** : the bootcamp title
+- **input-directory** : input directory
+- **day-title** : Title of the day
+- **output-path** : Path to save the pdf to
+- **logo-file** : Logo image file to use for the project
+- **template-file** : Latex Template file to use for the project
 
-```console
-python3 pdf_builder --help
-```
-
-Once you are in the pdf_builder directory, you can clone your project.
+You can clone your project wherever you want and use the pdf_builder.
 
 ```console
 git clone https://github.com/42-AI/bootcamp_data-engineering
@@ -88,7 +111,7 @@ git clone https://github.com/42-AI/bootcamp_data-engineering
 Now, you can build your pdf.
 
 ```console
-python3 pdf_builder -b "Data Engineering" -d /data/bootcamp_data-engineering/day00 -t "Day00 - PostgreSQL" -o day00.pdf
+pdf-builder bootcamp -b "Data Engineering" -d /data/bootcamp_data-engineering/day00 -t "Day00 - PostgreSQL" -o day00.pdf
 ```
 
 You now have a pdf file in your container. You can copy it out of your container with the following command.
@@ -99,7 +122,7 @@ docker cp pdf_builder:/data/day00.pdf .
 
 You finally have the pdf in your laptop filesystem, enjoy!
 
-## Destroy Containers and Images
+### Destroy Containers and Images
 
 When you are done, you can destroy the container and image with the following commands.
 
@@ -109,7 +132,7 @@ docker rm pdf_builder
 docker image rm pdf_builder
 ```
 
-## Free caches and remaining images (DANGEROUS)
+### Free caches and remaining images (DANGEROUS)
 
 With this command, everything linked to docker (images, caches, containers) are removed. It's like if you restarted with a freshly installed docker. This allows you to free memory space.
 
@@ -117,9 +140,3 @@ With this command, everything linked to docker (images, caches, containers) are 
 docker rm -f $(docker ps -a -q)
 docker rmi -f $(docker ps -a -q)
 docker system prune -a
-```
-
-## Contributors
-
-- Francois-Xavier Babin (fbabin@student.42.fr)
-- Mathilde Boivin (mboivin@student.42.fr)

@@ -1,77 +1,23 @@
 #!/usr/bin/env python3
 
 # ============================================================================#
-# =============================== LIBRAIRIES =================================#
+# =============================== LIBRARIES ==================================#
 # ============================================================================#
 
 import re
 import platform
-from utils import sub_run, error
+from pdf_builder.common.utils import sub_run, error
 
 # ============================================================================#
 # ================================ FUNCTIONS =================================#
 # ============================================================================#
 
-# FILES COPY
-###############
-
-
-def day_files_cpy(input_dir, template_file):
-    """
-    Copy files of a day and create a temporary directory.
-
-    Args:
-        input_dir (undefined): input day directory
-        template_file (undefined): template file
-
-    """
-    # retrieve file lists
-    day_f = sub_run("ls {0}/day*.md || ls {0}/module*.md".format(input_dir)).stdout.strip()
-    ex_list = sub_run("ls {}/**/ex*.md".format(input_dir)).stdout
-    imgs_dir = sub_run("ls -d {}/assets".format(input_dir))
-
-    # create a tmp dir with a copy of all files
-    sub_run("rm -rf tmp")
-    sub_run("mkdir -p tmp")
-    if not imgs_dir.stderr:
-        sub_run("cp -rp {} tmp/".format(imgs_dir.stdout.decode().strip()))
-    sub_run("cp {} tmp/day.md".format(day_f.decode()))
-    sub_run("cp {} tmp/".format(template_file))
-    for f in ex_list.split():
-        pattern = re.compile(r'(ex[0-9]{2}\.md)$')
-        for e in pattern.findall(f.decode()):
-            sub_run("cp {} tmp/{}".format(f.decode(),  e[:-3] + "_master.md"))
-        pattern = re.compile(r'(ex[0-9]{2}_interlude.*)$')
-        for e in pattern.findall(f.decode()):
-            sub_run("cp {} tmp/".format(f.decode()))
-
-
-def input_file_cpy(input_file, template_file):
-    """
-    Copy input file and create tmp directory.
-
-    Args:
-        input_file (undefined): input file
-        template_file (undefined): template file
-
-    """
-    # create a tmp dir with a copy of all files
-    sub_run("rm -rf tmp")
-    sub_run("mkdir -p tmp")
-
-    # copy input_file into tmp
-    sub_run("cp {} tmp/day.md".format(input_file))
-    sub_run("cp {} tmp/".format(template_file))
-    imgs_dir = sub_run(
-        "ls -d {}/assets".format("/".join(input_file.split('/')[:-1])))
-    if not imgs_dir.stderr:
-        sub_run("cp -rp {} tmp/".format(imgs_dir.stdout.decode().strip()))
 
 # FILES FORMAT
 #################
 
 
-def files_format(file_name):
+def file_add_clearpage(file_name):
     """
     Add clearpages at the end of exercises.
 
@@ -81,11 +27,11 @@ def files_format(file_name):
     """
     if platform.system() == "Darwin":
         sub_run(
-            "echo '\n\\\\clearpage' >> tmp/{}"
+            "echo '\n\n\\\\clearpage' >> tmp/{}"
             .format(file_name.split('/')[-1]))
     else:
         sub_run(
-            "echo '\n\\\\clearpage' >> tmp/{}"
+            "echo '\n\n\\\\clearpage' >> tmp/{}"
             .format(file_name.split('/')[-1]))
 
 # IMAGE FORMAT
@@ -231,30 +177,16 @@ def insert_line(file, idx, content):
     f.close()
 
 
-def insert_bootcamp_title(args):
+def insert_project_title(project_title):
     """
-    Insert bootcamp title to the template file.
+    Insert project title to the template file.
 
     Args:
         args (undefined):
 
     """
-    idx = get_line_containing("tmp/template.latex", "bootcamp_title")
-    insert_line("tmp/template.latex", idx,  args.bootcamp_title)
-
-
-def insert_day_title(args):
-    """
-    Insert day title to the template file.
-
-    Args:
-        args (undefined):
-
-    """
-    idx = get_line_containing("tmp/template.latex", "day_number")
-    insert_line("tmp/template.latex", idx, args.day_title.split(' - ')[0])
-    idx = get_line_containing("tmp/template.latex", "day_title")
-    insert_line("tmp/template.latex", idx, args.day_title.split(' - ')[1])
+    idx = get_line_containing("tmp/template.latex", "project_title")
+    insert_line("tmp/template.latex", idx, project_title)
 
 # CONVERT BLANK CODE BLOCKS TO TXT
 #####################################
@@ -424,39 +356,3 @@ def set_url_color(file_name: str, file_content: str):
     for line in file_content.rstrip().split('\n'):
         out += line + "\n"
     return (out)
-
-# RUN PANDOC
-###############
-
-
-def run_pandoc(file_name):
-    """
-    Build pdf file for each markdown.
-
-    Args:
-        file_name (undefined):
-
-    """
-    res = sub_run("pandoc {} --to=pdf --pdf-engine=pdflatex --highlight-style=breezedark\
-     -t latex -o {} --template=tmp/template.latex"
-                  .format(file_name, file_name + ".pdf"))
-    if res.stderr:
-        print(file_name)
-        error(res.stderr.decode().strip(), file_name)
-
-
-def run_pandoc_all(outfile, debug):
-    """
-    Build a pdf with all markdown files.
-
-    Args:
-        outfile (undefined): output file name
-        debug (undefined): debug option
-
-    """
-    res = sub_run("pandoc tmp/*.md --to=pdf --pdf-engine=pdflatex --highlight-style=breezedark\
-     -t latex -o {} --template=tmp/template.latex".format(outfile))
-    if res.stderr:
-        error(res.stderr.decode().strip())
-    if not debug:
-        sub_run("rm -rf tmp")

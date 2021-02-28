@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 
-##################
-#   LIBRAIRIES   #
-##################
+# ============================================================================#
+# =============================== LIBRARIES ==================================#
+# ============================================================================#
 
-import subprocess
 import sys
+import subprocess
 
-
-#################
-#   FUNCTIONS   #
-#################
+# ============================================================================#
+# ================================ FUNCTIONS =================================#
+# ============================================================================#
 
 
 def error(s, Warn=False, infile=None, line_nb=-1):
     """
     Raises error or warning at file/line precision.
-
     Args:
         s (undefined)           : error message
         Warn=False (undefined)  : Warn flag (true if warning, else error)
@@ -35,10 +33,8 @@ def error(s, Warn=False, infile=None, line_nb=-1):
 def sub_decorator(func):
     """
     Decorator to run command lines, catch exceptions.
-
     Args:
         func (undefined):
-
     Decorator for subprocess run (try catch errors)
     """
     def wrapper_func(*args, **kwargs):
@@ -56,7 +52,6 @@ def sub_decorator(func):
 def sub_run(command):
     """
     Run a bash command and show output/error.
-
     Args:
         command (undefined): command line
     """

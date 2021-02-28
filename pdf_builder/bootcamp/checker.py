@@ -1,12 +1,12 @@
+#!/usr/bin/env python3
+
 # ============================================================================#
-# =============================== LIBRAIRIES =================================#
+# =============================== LIBRARIES ==================================#
 # ============================================================================#
 
 import os
 import re
-
-from utils import error, sub_run
-
+from pdf_builder.common.utils import error, sub_run
 
 # ============================================================================#
 # ================================ FUNCTIONS =================================#
@@ -28,7 +28,7 @@ def check_bootcamp_title(title: str):
     return (True)
 
 
-def check_input_dir(directory: str):
+def check_input_dir_bootcamp(directory: str):
     """
     Check the bootcamp directory file organization
 
@@ -58,21 +58,7 @@ def check_input_dir(directory: str):
     # check directory has exXX.md files
     ls_ex = sub_run("ls {}/ex*/ex*.md".format(directory))
     if ls_ex.stderr:
-        error("markdown for exercices missing")
-
-
-def check_input_file(input_file: str):
-    """
-    Check if file exists and is markdown.
-
-    Args:
-        input_file (str): file name
-
-    """
-    if not os.path.isfile(input_file):
-        error("'{}' is not a file !".format(input_file))
-    if input_file.split('.')[-1] != "md":
-        error("'{}' is not a markdown file".format(input_file))
+        error("markdown for exercises missing")
 
 
 def check_day_title(title: str):
