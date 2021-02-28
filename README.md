@@ -35,6 +35,12 @@ The pdf_builder supports two modes:
 
 The pdf_builder uses latex and a library called pandoc, you can follow this [link](https://pandoc.org/installing.html) for the installation procedure of pandoc.
 
+Also install the following packages
+```
+tlmgr update --self
+tlmgr install ucs fvextra sectsty ucs cancel framed titlesec
+```
+
 You can install the pdf_builder with pip
 
 ```console
