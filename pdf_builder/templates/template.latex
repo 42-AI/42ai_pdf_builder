@@ -416,7 +416,7 @@ $endif$
 \vspace{3cm}
 
 \begin{center}
-\includegraphics[width=200pt]{assets/logo-42-ai.png}{\centering}
+\includegraphics[width=200pt]{tmp/logo-42-ai.png}{\centering}
 \end{center}
 
 \pagenumbering{gobble}

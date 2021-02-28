@@ -39,7 +39,7 @@ def simple(output_path, input_directory, project_title, logo_file, template_file
     try:
         check_project_title(project_title)
         check_input_dir_simple(input_directory)
-        project_files_cpy(input_directory, template_file)
+        project_files_cpy(input_directory, template_file, logo_file)
     except Exception as e:
         print(e)
         sys.exit(-1)
@@ -88,7 +88,7 @@ def bootcamp(output_path, input_directory, bootcamp_title, day_title, logo_file,
         check_bootcamp_title(bootcamp_title)
         check_day_title(day_title)
         check_input_dir_bootcamp(input_directory)
-        bootcamp_files_cpy(input_directory, template_file)
+        bootcamp_files_cpy(input_directory, template_file, logo_file)
     except Exception as e:
         print(e)
         sys.exit(-1)
