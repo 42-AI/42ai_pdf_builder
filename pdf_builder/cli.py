@@ -33,7 +33,7 @@ def cli():
 @click.option('--project-title',   '-t', help="Title of the project",                       required=True)
 @click.option('--logo-file',             help="Logo image file to use for the project",     default="templates/logo-42-ai.png")
 @click.option('--template-file',         help="Latex Template file to use for the project", default="templates/template.latex")
-@click.option('--debug',                 help="Logo image file to use for the project")
+@click.option('--debug',                 help="Logo image file to use for the project",     is_flag=True)
 def simple(output_path, input_directory, project_title, logo_file, template_file, debug):
     
     try:
@@ -80,8 +80,8 @@ def simple(output_path, input_directory, project_title, logo_file, template_file
 @click.option('--bootcamp-title',  '-b', help="Title of the bootcamp",                      required=True)
 @click.option('--day-title',       '-t', help="Title of the day",                           required=True)
 @click.option('--logo-file',             help="Logo image file to use for the project",     default="templates/logo-42-ai.png")
-@click.option('--template-file',         help="Latex Template file to use for the project", default="templates/template.latex")
-@click.option('--debug',                 help="Logo image file to use for the project")
+@click.option('--template-file',         help="Latex Template file to use for the project", default="templates/template_bootcamp.latex")
+@click.option('--debug',                 help="Logo image file to use for the project",     is_flag=True)
 def bootcamp(output_path, input_directory, bootcamp_title, day_title, logo_file, template_file, debug):
     
     try:

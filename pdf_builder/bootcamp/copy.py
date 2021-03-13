@@ -21,7 +21,7 @@ def bootcamp_files_cpy(input_dir, template_file, logo_file):
         template_file (undefined): template file
     """
     # retrieve file lists
-    project_f = sub_run("ls {0}/project*.md".format(input_dir)).stdout.strip()
+    project_f = sub_run("ls {0}/day*.md".format(input_dir)).stdout.strip()
     ex_list = sub_run("ls {}/**/ex*.md".format(input_dir)).stdout
     imgs_dir = sub_run("ls -d {}/assets".format(input_dir))
 
