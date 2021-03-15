@@ -22,7 +22,7 @@ def bootcamp_files_cpy(input_dir, template_file, logo_file):
     """
     # retrieve file lists
     project_f = sub_run("ls {0}/day*.md {0}/module*.md".format(input_dir)).stdout.strip()
-    if len(project_f.split(' ')) > 1:
+    if len(str(project_f).split(' ')) > 1:
         error("day and module file detected")
     ex_list = sub_run("ls {}/**/ex*.md".format(input_dir)).stdout
     imgs_dir = sub_run("ls -d {}/assets".format(input_dir))
