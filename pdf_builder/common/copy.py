@@ -19,7 +19,7 @@ def cpy_template_file_to(source, destination):
         _out.write(stream.read())
 
 
-def project_files_cpy(input_dir, template_file):
+def project_files_cpy(input_dir, template_file, logo_file):
     """
     Copy project files and create a temporary directory.
     Args:
@@ -37,8 +37,8 @@ def project_files_cpy(input_dir, template_file):
     if not imgs_dir.stderr:
         sub_run("cp -rp {} tmp/".format(imgs_dir.stdout.decode().strip()))
     sub_run("cp {} tmp/day.md".format(project_f.decode()))
-    cpy_template_file_to('templates/logo-42-ai.png', 'tmp/logo-42-ai.png')
-    cpy_template_file_to('templates/template.latex', 'tmp/template.latex')
+    cpy_template_file_to(logo_file, 'tmp/logo-42-ai.png')
+    cpy_template_file_to(template_file, 'tmp/template.latex')
 
     for f in ex_list.split():
         pattern = re.compile(r'(ex[0-9]{2}\.md)$')
