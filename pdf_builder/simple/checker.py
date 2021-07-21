@@ -19,7 +19,7 @@ def check_project_title(title: str):
         title (str): project title
     """
     if not title or len(title) < 3 or len(title) > 30:
-        error("invalid project title length ! (length must be between \
+        error("invalid project title length! (length must be between \
 3 and 30)")
     if re.search(r'[^a-zA-Z\s:]', title):
         error("invalid project title chars ([A-Za-z ] allowed)")
@@ -38,7 +38,7 @@ def check_input_dir_simple(directory: str):
     
     # check if it is a directory
     if not os.path.isdir(directory):
-        error("'{}' is not a directory !".format(directory))
+        error("'{}' is not a directory!".format(directory))
 
     # check directory has a projectXX.md
     ls_project = sub_run("ls {}/project*.md".format(directory))

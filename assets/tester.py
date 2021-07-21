@@ -44,9 +44,9 @@ def main():
 
             pattern = re.compile(r'(Successfully.*?!)')
             if pattern.findall(res.stderr.decode().strip()):
-                print("{}SUCCESS{} !".format(OKGREEN, ENDC))
+                print("{}SUCCESS{}!".format(OKGREEN, ENDC))
             else:
-                print("{}ERROR{} !".format(FAIL, ENDC))
+                print("{}ERROR{}!".format(FAIL, ENDC))
                 print(res.stdout.decode().strip())
     res = sub_run("python3 pdf_builder -b \"Data Engineering\" \
                    -f bootcamp_data-engineering/day00/ex03/psycopg2_basics.md \
@@ -54,11 +54,11 @@ def main():
                        bootcamp_data-engineering.psycopg2_doc.pdf")
     pattern = re.compile(r'(Successfully.*?!)')
     if pattern.findall(res.stderr.decode().strip()):
-        print("{}SUCCESS{} !".format(OKGREEN, ENDC))
+        print("{}SUCCESS{}!".format(OKGREEN, ENDC))
     else:
-        print("{}ERROR{} !".format(FAIL, ENDC))
+        print("{}ERROR{}!".format(FAIL, ENDC))
         print(res.stderr.decode())
-        pattern = re.compile(r'Detected !.*?$', re.DOTALL)
+        pattern = re.compile(r'Detected!.*?$', re.DOTALL)
         print("\n".join(pattern.findall(res.stderr.decode()
                                         .strip())[0].split('\n')[1:]))
 

@@ -69,7 +69,7 @@ def simple(output_path, input_directory, project_title, logo_file, template_file
         # GENERATING PDF OUTPUT
         run_pandoc_all(
             output_path.split('/')[-1], debug)
-        print("Successfully built pdf !")
+        print("Successfully built pdf!")
     except Exception as e:
         print(e)
         sys.exit(-1)
@@ -119,7 +119,7 @@ def bootcamp(output_path, input_directory, bootcamp_title, day_title, logo_file,
         # GENERATING PDF OUTPUT
         run_pandoc_all(
             output_path.split('/')[-1], debug)
-        print("Successfully built pdf !")
+        print("Successfully built pdf!")
     except Exception as e:
         print(e)
         sys.exit(-1)
