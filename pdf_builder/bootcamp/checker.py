@@ -21,7 +21,7 @@ def check_bootcamp_title(title: str):
         title (str): bootcamp title
     """
     if not title or len(title) < 3 or len(title) > 30:
-        error("invalid bootcamp title length ! (length must be between \
+        error("invalid bootcamp title length! (length must be between \
 3 and 30)")
     if re.search(r'[^a-zA-Z\s:]', title):
         error("invalid bootcamp title chars ([A-Za-z ] allowed)")
@@ -46,7 +46,7 @@ def check_input_dir_bootcamp(directory: str):
 
     # check if it is a directory
     if not os.path.isdir(directory):
-        error("'{}' is not a directory !".format(directory))
+        error("'{}' is not a directory!".format(directory))
 
     # check directory has a dayXX.md
     ls_day = sub_run("ls {}/day*.md".format(directory))
@@ -70,7 +70,7 @@ def check_day_title(title: str):
 
     """
     if not title or len(title) < 14 or len(title) > 40:
-        error("invalid day/module title length ! (length must be between\
+        error("invalid day/module title length! (length must be between\
  11 and 40)")
     if re.search(r'[^A-Za-z\d -]', title):
         error("invalid day/module title chars ([A-Za-z -] allowed)")

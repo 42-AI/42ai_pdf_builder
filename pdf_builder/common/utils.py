@@ -42,7 +42,7 @@ def sub_decorator(func):
             res = func(*args, **kwargs)
             return (res)
         except Exception as e:
-            print("{} Exception Detected !\n{}".format(*args, e))
+            print("{} Exception Detected!\n{}".format(*args, e))
             sys.exit(-1)
 
     return wrapper_func

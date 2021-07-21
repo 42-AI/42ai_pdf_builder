@@ -54,7 +54,7 @@ def change_img_format(file_name: str, file_content: str):
     out = ""
 
     if len(file_content) == 0:
-        error("empty file !", infile=file_name)
+        error("empty file!", infile=file_name)
 
     img_pattern_md = re.compile(r'[\s]*\!\[(.*)\]\((.*)\)({.*})?')
     img_pattern_html = re.compile(r'[\s]*<img.*src=[\"\']{1}(.*)[\"\']{1}.*/>')
@@ -76,15 +76,15 @@ def change_img_format(file_name: str, file_content: str):
             style = ''
 
         if len(title) == 0:
-            error("empty image title !", Warn=True,
+            error("empty image title!", Warn=True,
                   infile=file_name, line_nb=idx)
             title = path.split('/')[-1].split('.')[0]
         if len(path) == 0:
-            error("empty image path !", infile=file_name, line_nb=idx)
+            error("empty image path!", infile=file_name, line_nb=idx)
 
         if len(style) != 0 and not re.match(r'.*width=[0-9]{1,4}px.*', style):
             error(
-                "wrong image style format ! (example: '{width=250px}')",
+                "wrong image style format! (example: '{width=250px}')",
                 infile=file_name, line_nb=idx)
 
         path = "tmp/assets/" + path.split('/')[-1]
@@ -108,7 +108,7 @@ def change_header_format(file_name: str, file_content: str):
     out = ""
 
     if len(file_content) == 0:
-        error("empty file !", infile=file_name)
+        error("empty file!", infile=file_name)
 
     code_flag = 0
     header_pattern = re.compile(r'([\s]*)([#]{1,4})[\s]+(.*)')
@@ -128,10 +128,10 @@ def change_header_format(file_name: str, file_content: str):
             out += "{}{} {}\n".format(front_space, header, title)
         else:
             if len(front_space) >= 4:
-                error("too much space(s) in front of header !",
+                error("too much space(s) in front of header!",
                       infile=file_name, line_nb=idx)
             if len(front_space) > 0:
-                error("space(s) in front of header !",
+                error("space(s) in front of header!",
                       Warn=True, infile=file_name, line_nb=idx)
             out += "{} {}\n".format(header, title)
     return (out)
@@ -204,7 +204,7 @@ def change_empty_code_block_style(file_name: str, file_content: str):
     out = ""
 
     if len(file_content) == 0:
-        error("empty file !", infile=file_name)
+        error("empty file!", infile=file_name)
 
     code_flag = 0
     code_flag_line = 0
@@ -226,7 +226,7 @@ def change_empty_code_block_style(file_name: str, file_content: str):
         else:
             if language.strip() not in ['console', 'bash', 'sh',
                                         'zsh', 'python', 'py', 'txt']:
-                error("unsupported language ! (supported languages are: 'console', \
+                error("unsupported language! (supported languages are: 'console', \
 'bash', 'sh', 'zsh', 'python', 'py', 'txt')",
                       infile=file_name, line_nb=idx)
 
@@ -237,7 +237,7 @@ def change_empty_code_block_style(file_name: str, file_content: str):
         code_flag = 1
         code_flag_line = idx
     if code_flag:
-        error("could not find closing code snippet !",
+        error("could not find closing code snippet!",
               infile=file_name, line_nb=code_flag_line)
 
     return (out)
@@ -258,7 +258,7 @@ def change_list_format(file_name: str, file_content: str):
     out = ""
 
     if len(file_content) == 0:
-        error("empty file !", infile=file_name)
+        error("empty file!", infile=file_name)
 
     code_flag = 0
     equation_flag = 0
@@ -284,7 +284,7 @@ def change_list_format(file_name: str, file_content: str):
         front_space = groups[0]
 
         if len(front_space) % list_factor != 0:
-            error("number of spaces in front of list is not a factor of {} !"
+            error("number of spaces in front of list is not a factor of {}!"
                   .format(list_factor), infile=file_name, line_nb=idx)
 
         if not empty_prev_line:
@@ -311,7 +311,7 @@ def change_equations_format(file_name: str, file_content: str):
     out = ""
 
     if len(file_content) == 0:
-        error("empty file !", infile=file_name)
+        error("empty file!", infile=file_name)
 
     eq_flag = 0
     eq_flag_line = 0
@@ -331,7 +331,7 @@ def change_equations_format(file_name: str, file_content: str):
         eq_flag = 1
         eq_flag_line = idx
     if eq_flag:
-        error("could not find closing equation mark !",
+        error("could not find closing equation mark!",
               infile=file_name, line_nb=eq_flag_line)
 
     return (out)
@@ -352,7 +352,7 @@ def set_url_color(file_name: str, file_content: str):
     out = "---\ncolorlinks: true\nurlcolor: \"blue\"\n---\n\n"
 
     if len(file_content) == 0:
-        error("empty file !", infile=file_name)
+        error("empty file!", infile=file_name)
     for line in file_content.rstrip().split('\n'):
         out += line + "\n"
     return (out)
